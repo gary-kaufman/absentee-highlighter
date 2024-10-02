@@ -2,7 +2,7 @@ from datetime import date
 
 import openpyxl
 from openpyxl.reader.excel import load_workbook
-from openpyxl.styles import Font, PatternFill, Border, Side
+from openpyxl.styles import Font, PatternFill, Border, Side, Alignment
 
 
 def absentee_highlighter(input_filename):
@@ -18,6 +18,7 @@ def absentee_highlighter(input_filename):
 
     # Set up header rows on destination file
     columns = ["A", "B", "C"]
+    column_widths = [25, 10, 12]
     header_names = ["Full Name", "Phone", "Days Absent"]
 
     for index in range(3):
@@ -27,7 +28,7 @@ def absentee_highlighter(input_filename):
         cell.border = Border(bottom=Side(style="medium"))
         cell.font = Font(bold=True)
 
-        absentee_highlighted_worksheet.column_dimensions[columns[index]].width = 20
+        absentee_highlighted_worksheet.column_dimensions[columns[index]].width = column_widths[index]
 
     # Iterate through membership worksheet and add rows to destination worksheet
     while True:
@@ -44,10 +45,11 @@ def absentee_highlighter(input_filename):
         absentee_highlighted_worksheet.cell(row_count, 1).value = full_name
         absentee_highlighted_worksheet.cell(row_count, 2).value = phone
         absentee_highlighted_worksheet.cell(row_count, 3).value = days_absent
+        absentee_highlighted_worksheet.cell(row_count, 3).alignment = Alignment(horizontal="center")
 
         # If `days_absent` is excessive, highlight the cell
         if days_absent > 10:
-            absentee_highlighted_worksheet.cell(row_count, 3).fill = PatternFill("solid", fgColor="0099CC00")
+            absentee_highlighted_worksheet.cell(row_count, 3).fill = PatternFill("solid", fgColor="00FFFF99")
 
         row_count += 1
 
